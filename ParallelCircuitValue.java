@@ -2,29 +2,30 @@ package cp2024.solution;
 
 import cp2024.circuit.CircuitValue;
 
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ParallelCircuitValue implements CircuitValue {
-    private LinkedBlockingQueue<Boolean> channel;
-    private Boolean result;
-    private Boolean isBroken;
+    private Future<Boolean> channel;
 
-    public ParallelCircuitValue(LinkedBlockingQueue<Boolean> channel) {
+    public ParallelCircuitValue(Future<Boolean> channel) {
         this.channel = channel;
-        this.result = null;
-        this.isBroken = false;
     }
 
     @Override
     public boolean getValue() throws InterruptedException {
-        if (this.result == null) {
-            this.result = channel.take();
+        try {
+            Boolean result = this.channel.get();
+            return result;
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof CancellationException) {
+                System.out.println("Task got canceled at some point!");
+                throw new InterruptedException();
+            } else {
+                throw new RuntimeException("UNPREDICTED FAILURE OF TASK!");
+            }
         }
-
-        if (this.isBroken) {
-            throw new InterruptedException();
-        }
-
-        return result;
     }
 }
