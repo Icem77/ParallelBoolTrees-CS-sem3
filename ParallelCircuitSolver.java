@@ -5,15 +5,20 @@ import cp2024.circuit.CircuitValue;
 import cp2024.circuit.Circuit;
 
 public class ParallelCircuitSolver implements CircuitSolver {
+    // TODO pozwalaj na współbiezną obsługę wielu próśb
+    // TODO mozliwie współbieznie obliczaj obwody
+
     @Override
     public CircuitValue solve(Circuit c) {
+        // TODO niezwłocznie zwróć spejcalny obiekt reprezentujący wartość obwodu
+
         /* FIX ME */
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public void stop() {
-        /*FIX ME*/
+        /* FIX ME */
         throw new RuntimeException("Not implemented.");
     }
 }
