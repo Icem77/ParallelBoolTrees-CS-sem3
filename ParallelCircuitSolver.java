@@ -4,15 +4,17 @@ import cp2024.circuit.CircuitSolver;
 import cp2024.circuit.CircuitValue;
 
 import java.util.LinkedList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Future;
 
 import cp2024.circuit.Circuit;
 
 public class ParallelCircuitSolver implements CircuitSolver {
-    ExecutorService workers;
+    ThreadPoolExecutor workers;
+    PriorityBlockingQueue<Runnable> tasks;
     LinkedList<Future<?>> ogoingCircuitCalculations;
     LinkedList<LinkedBlockingQueue<Boolean>> correspondingChannels;
     private Boolean isStoped;
@@ -21,9 +23,10 @@ public class ParallelCircuitSolver implements CircuitSolver {
     // TODO mozliwie współbieznie obliczaj obwody
 
     public ParallelCircuitSolver() {
-        this.workers = Executors.newFixedThreadPool(8);
-        this.ogoingCircuitCalculations = new LinkedList<>();
-        this.correspondingChannels = new LinkedList<>();
+        this.tasks = new PriorityBlockingQueue<>();
+        this.workers = new ThreadPoolExecutor(
+            8, 8, 0, TimeUnit.SECONDS, tasks
+        );
         this.isStoped = false;
     }
 
