@@ -17,7 +17,7 @@ public class ORNode extends SimpleNode {
             this.cancelWithLock(executor, depth);
         } else if (this.trues + this.falses == this.nargs) {
             executor.submit(new PushToParent(executor, parentNode, this.trues > 0, depth - 1));
-            this.cancelWithLock(executor, depth);
+            this.lock.unlock();
         } else {
             this.lock.unlock();
         }
