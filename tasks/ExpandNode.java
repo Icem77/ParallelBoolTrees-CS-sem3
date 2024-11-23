@@ -41,6 +41,9 @@ public class ExpandNode extends PrioritezedTask {
                 case GT:
                     newNode = new GTNode(parentNode, args.length, ((ThresholdNode) nodeToExpand).getThreshold());
                     break;
+                case NOT:
+                    newNode = new NOTNode(parentNode);
+                    break;
                 default:
                     newNode = null;
             }
