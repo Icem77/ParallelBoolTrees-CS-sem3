@@ -15,11 +15,8 @@ public class GTNode extends ThresholdNode {
         if (this.trues > this.threshold) {
             executor.submit(new PushToParent(executor, parentNode, true, depth - 1));
             this.cancelWithLock(executor, depth);
-        } else if (this.nargs - this.threshold < this.falses) {
-            executor.submit(new PushToParent(executor, parentNode, false, depth - 1));
-            this.cancelWithLock(executor, depth);
-        } else {
-            this.lock.unlock();
+        } else if (this.trues + this.falses == this.nargs) {
+            executor.submit(new PushToParent(executor, parentNode, this.trues > this.threshold, depth - 1));
         }
     }
 }

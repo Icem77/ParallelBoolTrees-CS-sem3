@@ -15,7 +15,6 @@ public class IFNode extends Node {
 
     @Override
     public void check(ThreadPoolExecutor executor, Integer depth) {
-        this.lock.lock();
         if (A != null) {
             if (A == true && B != null) {
                 executor.submit(new PushToParent(executor, parentNode, B, depth - 1));
@@ -23,7 +22,6 @@ public class IFNode extends Node {
                 executor.submit(new PushToParent(executor, parentNode, C, depth - 1));
             }
         }
-        this.lock.unlock();
     }
 
     @Override

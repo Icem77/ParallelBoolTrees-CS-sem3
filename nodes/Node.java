@@ -9,7 +9,7 @@ import cp2024.solution.tasks.CancelDown;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public abstract class Node {
-    protected ReentrantLock lock;
+    public ReentrantLock lock;
     protected Node parentNode;
     protected LinkedList<Node> subNodes; // do cancelowania zlecen na liczenie dzieci
     protected LinkedList<Future<?>> assignedTasks;
@@ -28,10 +28,8 @@ public abstract class Node {
     public abstract void check(ThreadPoolExecutor executor, Integer depth);
 
     public void cancel(ThreadPoolExecutor executor, Integer depth) {
-        this.lock.lock();
         if (this.isCanceled == false) {
             this.markAsCanceled();
-            this.lock.unlock();
 
             for (Future<?> assignedTask : assignedTasks) {
                 assignedTask.cancel(true);
@@ -40,14 +38,11 @@ public abstract class Node {
             for (Node subNode : subNodes) {
                 executor.submit(new CancelDown(executor, subNode, depth + 1));
             }
-        } else {
-            this.lock.unlock();
         }
     }
 
     public void cancelWithLock(ThreadPoolExecutor executor, Integer depth) {
         this.markAsCanceled();
-        this.lock.unlock();
 
         for (Future<?> assignedTask : assignedTasks) {
             assignedTask.cancel(true);
@@ -66,5 +61,15 @@ public abstract class Node {
         synchronized (this.subNodes) {
             this.subNodes.add(subNode);
         }
+    }
+
+    public void attachAssignedTask(Future<?> task) {
+        synchronized (this.assignedTasks) {
+            assignedTasks.add(task);
+        }
+    }
+
+    public Boolean isCanceled() {
+        return this.isCanceled;
     }
 }

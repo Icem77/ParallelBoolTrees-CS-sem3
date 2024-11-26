@@ -1,8 +1,13 @@
 package cp2024.solution;
 
+import java.time.Duration;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class test {
 
@@ -53,19 +58,8 @@ public class test {
     }
 
     public static void main(String[] args) {
-        ForkJoinPool pool = new ForkJoinPool();
-
-        Future<?> future = pool.submit(new ForkingTask());
-
-        try {
-            System.out.println("Give em some time");
-            Thread.sleep(10000);
-            System.out.println("Woke up");
-        } catch (InterruptedException e) {
-        }
-
-        future.cancel(true);
-        pool.shutdown();
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        System.out.println("The end!");
     }
 
 }

@@ -21,7 +21,12 @@ public class ExpandNode extends PrioritezedTask {
     @Override
     public void run() {
         if (nodeToExpand.getType() == NodeType.LEAF) {
-            executor.submit(new SqueezeLeaf(executor, (LeafNode) nodeToExpand, parentNode, depth));
+            try {
+                SqueezeLeaf squeezeLeafTask = new SqueezeLeaf(executor, (LeafNode) nodeToExpand, parentNode, depth);
+                squeezeLeafTask.run();
+            } catch (Exception e) {
+                System.out.println("EXCEPTION: " + e.getMessage());
+            }
         } else if (nodeToExpand.getType() == NodeType.IF) {
             CircuitNode[] args = {};
             try {
@@ -52,6 +57,7 @@ public class ExpandNode extends PrioritezedTask {
             switch (nodeToExpand.getType()) {
                 case AND:
                     newNode = new ANDNode(parentNode, args.length);
+                    break;
                 case OR:
                     newNode = new ORNode(parentNode, args.length);
                     break;
@@ -66,12 +72,13 @@ public class ExpandNode extends PrioritezedTask {
                     break;
                 default:
                     newNode = null;
+                    break;
             }
 
             parentNode.attachSubNode(newNode);
 
             for (CircuitNode arg : args) {
-                executor.submit(new ExpandNode(executor, arg, newNode, depth + 1));
+                newNode.attachAssignedTask(executor.submit(new ExpandNode(executor, arg, newNode, depth + 1)));
             }
         }
     }

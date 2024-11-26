@@ -15,18 +15,11 @@ public abstract class SimpleNode extends Node {
     }
 
     @Override
-    public synchronized void takeSubresult(ThreadPoolExecutor executor, Integer depth, Boolean subResult) {
-        this.lock.lock();
-
-        if (this.isCanceled == false) {
-            if (subResult == true) {
-                this.trues++;
-            } else {
-                this.falses++;
-            }
-            this.check(executor, depth);
+    public void takeSubresult(ThreadPoolExecutor executor, Integer depth, Boolean subResult) {
+        if (subResult == true) {
+            this.trues++;
         } else {
-            this.lock.unlock();
+            this.falses++;
         }
     }
 }

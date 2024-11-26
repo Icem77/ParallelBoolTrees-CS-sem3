@@ -21,7 +21,6 @@ public class SqueezeLeaf extends PrioritezedTask {
             boolean squeezedValue = this.leafToSqueeze.getValue();
             this.executor.submit(new PushToParent(executor, parentNode, squeezedValue, depth - 1));
         } catch (InterruptedException e) {
-            System.out.println("Interrupted while sleeping on a leaf!");
         }
     }
 }

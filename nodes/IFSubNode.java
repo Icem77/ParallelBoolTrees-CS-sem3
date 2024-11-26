@@ -29,5 +29,6 @@ public class IFSubNode extends Node {
 
     @Override
     public void check(ThreadPoolExecutor executor, Integer depth) {
+        this.parentNode.check(executor, depth);
     }
 }

@@ -18,8 +18,6 @@ public class ORNode extends SimpleNode {
         } else if (this.trues + this.falses == this.nargs) {
             executor.submit(new PushToParent(executor, parentNode, this.trues > 0, depth - 1));
             this.lock.unlock();
-        } else {
-            this.lock.unlock();
         }
     }
 }
