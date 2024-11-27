@@ -19,7 +19,12 @@ public class ParallelCircuitSolver implements CircuitSolver {
 
     public ParallelCircuitSolver() {
         this.workers = new ThreadPoolExecutor(
-                8, 8, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+                8, 50, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        workers.setThreadFactory(runnable -> {
+            Thread thread = new Thread(runnable);
+            thread.setDaemon(true); // Mark the thread as a daemon
+            return thread;
+        });
         this.resultChannels = new LinkedList<>();
         this.isStoped = false;
     }

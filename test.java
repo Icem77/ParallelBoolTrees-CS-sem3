@@ -11,21 +11,20 @@ import java.util.concurrent.TimeUnit;
 
 public class test {
 
-    static class SleepTask extends RecursiveTask<Integer> {
+    static class SleepTask implements Runnable {
 
         public SleepTask() {
             super();
         }
 
         @Override
-        public Integer compute() {
+        public void run() {
             try {
                 System.out.println("STARTING SUB TASK");
                 Thread.sleep(20000000);
-                return 0;
+
             } catch (InterruptedException e) {
                 System.out.println("Interrupted while sleeping in subtask");
-                return 0;
             }
         }
     }
@@ -43,22 +42,9 @@ public class test {
         }
     }
 
-    private static class ForkingTask extends RecursiveTask<Integer> {
-
-        @Override
-        public Integer compute() {
-            System.out.println("Task started!");
-            SleepTask sleepTasknew = new SleepTask();
-            NotListeningTask notListeningTask = new NotListeningTask();
-            System.out.println("About to fork!");
-            notListeningTask.fork();
-            sleepTasknew.compute();
-            return 0;
-        }
-    }
-
     public static void main(String[] args) {
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(1, 4, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        pool.submit(new SleepTask());
         System.out.println("The end!");
     }
 
