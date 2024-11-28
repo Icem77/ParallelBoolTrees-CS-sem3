@@ -1,6 +1,6 @@
 package cp2024.solution.tasks;
 
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
 
 import cp2024.circuit.LeafNode;
 import cp2024.solution.nodes.Node;
@@ -9,8 +9,8 @@ public class SqueezeLeaf extends PrioritezedTask {
     private Node parentNode;
     private LeafNode leafToSqueeze;
 
-    public SqueezeLeaf(ThreadPoolExecutor executor, LeafNode leafToSqueeze, Node parentNode, Integer depth) {
-        super(executor, depth);
+    public SqueezeLeaf(ExecutorService executor, LeafNode leafToSqueeze, Node parentNode) {
+        super(executor);
         this.parentNode = parentNode;
         this.leafToSqueeze = leafToSqueeze;
     }
@@ -19,7 +19,7 @@ public class SqueezeLeaf extends PrioritezedTask {
     public void run() {
         try {
             boolean squeezedValue = this.leafToSqueeze.getValue();
-            this.executor.submit(new PushToParent(executor, parentNode, squeezedValue, depth - 1));
+            this.executor.submit(new PushToParent(executor, parentNode, squeezedValue));
         } catch (InterruptedException e) {
         }
     }

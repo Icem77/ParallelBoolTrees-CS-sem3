@@ -1,6 +1,6 @@
 package cp2024.solution.nodes;
 
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
 
 public class IFSubNode extends Node {
     private IFSubNodeType type;
@@ -11,7 +11,7 @@ public class IFSubNode extends Node {
     }
 
     @Override
-    public void takeSubresult(ThreadPoolExecutor executor, Integer depth, Boolean subResult) {
+    public void takeSubresult(ExecutorService executor, Boolean subResult) {
         switch (this.type) {
             case A:
                 ((IFNode) parentNode).takeA(subResult);
@@ -24,11 +24,11 @@ public class IFSubNode extends Node {
                 break;
         }
 
-        parentNode.check(executor, depth);
+        parentNode.check(executor);
     }
 
     @Override
-    public void check(ThreadPoolExecutor executor, Integer depth) {
-        this.parentNode.check(executor, depth);
+    public void check(ExecutorService executor) {
+        this.parentNode.check(executor);
     }
 }

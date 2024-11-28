@@ -1,6 +1,6 @@
 package cp2024.solution.tasks;
 
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
 
 import cp2024.circuit.CircuitNode;
 import cp2024.circuit.LeafNode;
@@ -12,8 +12,8 @@ public class ExpandNode extends PrioritezedTask {
     private Node parentNode;
     private CircuitNode nodeToExpand;
 
-    public ExpandNode(ThreadPoolExecutor executor, CircuitNode nodeToExpand, Node parentNode, Integer depth) {
-        super(executor, depth);
+    public ExpandNode(ExecutorService executor, CircuitNode nodeToExpand, Node parentNode) {
+        super(executor);
         this.nodeToExpand = nodeToExpand;
         this.parentNode = parentNode;
     }
@@ -22,10 +22,10 @@ public class ExpandNode extends PrioritezedTask {
     public void run() {
         if (nodeToExpand.getType() == NodeType.LEAF) {
             try {
-                SqueezeLeaf squeezeLeafTask = new SqueezeLeaf(executor, (LeafNode) nodeToExpand, parentNode, depth);
+                SqueezeLeaf squeezeLeafTask = new SqueezeLeaf(executor, (LeafNode) nodeToExpand, parentNode);
                 squeezeLeafTask.run();
             } catch (Exception e) {
-                System.out.println("EXCEPTION: " + e.getMessage());
+                // TODO
             }
         } else if (nodeToExpand.getType() == NodeType.IF) {
             CircuitNode[] args = {};
@@ -42,9 +42,9 @@ public class ExpandNode extends PrioritezedTask {
             BigIf.attachSubNode(A);
             BigIf.attachSubNode(B);
             BigIf.attachSubNode(C);
-            executor.submit(new ExpandNode(executor, args[0], A, depth + 1));
-            executor.submit(new ExpandNode(executor, args[1], B, depth + 1));
-            executor.submit(new ExpandNode(executor, args[2], C, depth + 1));
+            executor.submit(new ExpandNode(executor, args[0], A));
+            executor.submit(new ExpandNode(executor, args[1], B));
+            executor.submit(new ExpandNode(executor, args[2], C));
             parentNode.attachSubNode(BigIf);
         } else {
             CircuitNode[] args = {};
@@ -78,7 +78,7 @@ public class ExpandNode extends PrioritezedTask {
             parentNode.attachSubNode(newNode);
 
             for (CircuitNode arg : args) {
-                newNode.attachAssignedTask(executor.submit(new ExpandNode(executor, arg, newNode, depth + 1)));
+                newNode.attachAssignedTask(executor.submit(new ExpandNode(executor, arg, newNode)));
             }
         }
     }

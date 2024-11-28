@@ -6,25 +6,25 @@ import cp2024.solution.nodes.ResultNode;
 import cp2024.solution.tasks.ExpandNode;
 
 import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import cp2024.circuit.Circuit;
 
 public class ParallelCircuitSolver implements CircuitSolver {
-    ThreadPoolExecutor workers;
+    ExecutorService workers;
     LinkedList<LinkedBlockingQueue<ResultType>> resultChannels;
     private Boolean isStoped;
 
     public ParallelCircuitSolver() {
-        this.workers = new ThreadPoolExecutor(
-                8, 50, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
-        workers.setThreadFactory(runnable -> {
-            Thread thread = new Thread(runnable);
-            thread.setDaemon(true); // Mark the thread as a daemon
-            return thread;
-        });
+        this.workers = Executors.newCachedThreadPool(
+                runnable -> {
+                    Thread thread = new Thread(runnable);
+                    thread.setDaemon(true); // Mark the thread as a daemon
+                    return thread;
+                });
         this.resultChannels = new LinkedList<>();
         this.isStoped = false;
     }
@@ -39,7 +39,7 @@ public class ParallelCircuitSolver implements CircuitSolver {
         } else {
             ResultNode resultNode = new ResultNode(null, newChannel);
             this.resultChannels.add(newChannel);
-            workers.submit(new ExpandNode(workers, c.getRoot(), resultNode, 0));
+            workers.submit(new ExpandNode(workers, c.getRoot(), resultNode));
             return val;
         }
     }

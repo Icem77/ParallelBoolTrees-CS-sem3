@@ -1,6 +1,6 @@
 package cp2024.solution.nodes;
 
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
 
 import cp2024.solution.tasks.PushToParent;
 
@@ -14,18 +14,18 @@ public class IFNode extends Node {
     }
 
     @Override
-    public void check(ThreadPoolExecutor executor, Integer depth) {
+    public void check(ExecutorService executor) {
         if (A != null) {
             if (A == true && B != null) {
-                executor.submit(new PushToParent(executor, parentNode, B, depth - 1));
+                executor.submit(new PushToParent(executor, parentNode, B));
             } else if (A == false && C != null) {
-                executor.submit(new PushToParent(executor, parentNode, C, depth - 1));
+                executor.submit(new PushToParent(executor, parentNode, C));
             }
         }
     }
 
     @Override
-    public void takeSubresult(ThreadPoolExecutor executor, Integer depth, Boolean subResult) {
+    public void takeSubresult(ExecutorService executor, Boolean subResult) {
     }
 
     public void takeA(Boolean subResult) {

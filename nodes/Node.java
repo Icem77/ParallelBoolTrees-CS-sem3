@@ -1,12 +1,11 @@
 package cp2024.solution.nodes;
 
 import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 
 import cp2024.solution.tasks.CancelDown;
-
-import java.util.concurrent.ThreadPoolExecutor;
 
 public abstract class Node {
     public ReentrantLock lock;
@@ -23,11 +22,11 @@ public abstract class Node {
         this.assignedTasks = new LinkedList<>();
     }
 
-    public abstract void takeSubresult(ThreadPoolExecutor executor, Integer depth, Boolean subResult);
+    public abstract void takeSubresult(ExecutorService executor, Boolean subResult);
 
-    public abstract void check(ThreadPoolExecutor executor, Integer depth);
+    public abstract void check(ExecutorService executor);
 
-    public void cancel(ThreadPoolExecutor executor, Integer depth) {
+    public void cancel(ExecutorService executor) {
         if (this.isCanceled == false) {
             this.markAsCanceled();
 
@@ -36,12 +35,12 @@ public abstract class Node {
             }
 
             for (Node subNode : subNodes) {
-                executor.submit(new CancelDown(executor, subNode, depth + 1));
+                executor.submit(new CancelDown(executor, subNode));
             }
         }
     }
 
-    public void cancelWithLock(ThreadPoolExecutor executor, Integer depth) {
+    public void cancelWithLock(ExecutorService executor) {
         this.markAsCanceled();
 
         for (Future<?> assignedTask : assignedTasks) {
@@ -49,7 +48,7 @@ public abstract class Node {
         }
 
         for (Node subNode : subNodes) {
-            executor.submit(new CancelDown(executor, subNode, depth + 1));
+            executor.submit(new CancelDown(executor, subNode));
         }
     }
 

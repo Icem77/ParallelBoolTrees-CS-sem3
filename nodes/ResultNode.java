@@ -1,7 +1,7 @@
 package cp2024.solution.nodes;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import cp2024.solution.ResultType;
 
@@ -14,7 +14,7 @@ public class ResultNode extends Node {
     }
 
     @Override
-    public void takeSubresult(ThreadPoolExecutor executor, Integer depth, Boolean subResult) {
+    public void takeSubresult(ExecutorService executor, Boolean subResult) {
         if (subResult == null) {
             this.channel.add(null);
         } else if (subResult == true) {
@@ -25,7 +25,7 @@ public class ResultNode extends Node {
     }
 
     @Override
-    public void check(ThreadPoolExecutor executor, Integer depth) {
+    public void check(ExecutorService executor) {
     }
 
 }

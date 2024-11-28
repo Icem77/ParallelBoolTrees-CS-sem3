@@ -1,6 +1,6 @@
 package cp2024.solution.tasks;
 
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
 
 import cp2024.solution.nodes.Node;
 
@@ -8,8 +8,8 @@ public class PushToParent extends PrioritezedTask {
     private Node parentNode;
     private Boolean valueToPush;
 
-    public PushToParent(ThreadPoolExecutor executor, Node parentNode, Boolean valueToPush, Integer depth) {
-        super(executor, depth);
+    public PushToParent(ExecutorService executor, Node parentNode, Boolean valueToPush) {
+        super(executor);
         this.parentNode = parentNode;
         this.valueToPush = valueToPush;
     }
@@ -18,8 +18,8 @@ public class PushToParent extends PrioritezedTask {
     public void run() {
         this.parentNode.lock.lock();
         if (this.parentNode.isCanceled() == false) {
-            this.parentNode.takeSubresult(executor, depth, valueToPush);
-            this.parentNode.check(executor, depth);
+            this.parentNode.takeSubresult(executor, valueToPush);
+            this.parentNode.check(executor);
         }
         this.parentNode.lock.unlock();
     }

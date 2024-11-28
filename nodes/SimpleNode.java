@@ -1,6 +1,6 @@
 package cp2024.solution.nodes;
 
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
 
 public abstract class SimpleNode extends Node {
     protected Integer trues;
@@ -15,7 +15,7 @@ public abstract class SimpleNode extends Node {
     }
 
     @Override
-    public void takeSubresult(ThreadPoolExecutor executor, Integer depth, Boolean subResult) {
+    public void takeSubresult(ExecutorService executor, Boolean subResult) {
         if (subResult == true) {
             this.trues++;
         } else {

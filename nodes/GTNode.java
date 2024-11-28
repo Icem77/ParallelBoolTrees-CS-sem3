@@ -1,6 +1,6 @@
 package cp2024.solution.nodes;
 
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
 
 import cp2024.solution.tasks.PushToParent;
 
@@ -11,12 +11,12 @@ public class GTNode extends ThresholdNode {
     }
 
     @Override
-    public void check(ThreadPoolExecutor executor, Integer depth) {
+    public void check(ExecutorService executor) {
         if (this.trues > this.threshold) {
-            executor.submit(new PushToParent(executor, parentNode, true, depth - 1));
-            this.cancelWithLock(executor, depth);
+            executor.submit(new PushToParent(executor, parentNode, true));
+            this.cancelWithLock(executor);
         } else if (this.trues + this.falses == this.nargs) {
-            executor.submit(new PushToParent(executor, parentNode, this.trues > this.threshold, depth - 1));
+            executor.submit(new PushToParent(executor, parentNode, this.trues > this.threshold));
         }
     }
 }
