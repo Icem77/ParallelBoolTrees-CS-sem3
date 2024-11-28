@@ -18,8 +18,14 @@ public class IFNode extends Node {
         if (A != null) {
             if (A == true && B != null) {
                 executor.submit(new PushToParent(executor, parentNode, B));
+                if (C == null) {
+                    this.cancelWithLock(executor);
+                }
             } else if (A == false && C != null) {
                 executor.submit(new PushToParent(executor, parentNode, C));
+                if (B == null) {
+                    this.cancelWithLock(executor);
+                }
             }
         }
     }

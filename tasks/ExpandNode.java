@@ -42,10 +42,11 @@ public class ExpandNode extends PrioritezedTask {
             BigIf.attachSubNode(A);
             BigIf.attachSubNode(B);
             BigIf.attachSubNode(C);
+            parentNode.attachSubNode(BigIf);
             executor.submit(new ExpandNode(executor, args[0], A));
             executor.submit(new ExpandNode(executor, args[1], B));
             executor.submit(new ExpandNode(executor, args[2], C));
-            parentNode.attachSubNode(BigIf);
+
         } else {
             CircuitNode[] args = {};
             try {

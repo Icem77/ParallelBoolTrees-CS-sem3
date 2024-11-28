@@ -19,12 +19,7 @@ public class ParallelCircuitSolver implements CircuitSolver {
     private Boolean isStoped;
 
     public ParallelCircuitSolver() {
-        this.workers = Executors.newCachedThreadPool(
-                runnable -> {
-                    Thread thread = new Thread(runnable);
-                    thread.setDaemon(true); // Mark the thread as a daemon
-                    return thread;
-                });
+        this.workers = Executors.newCachedThreadPool();
         this.resultChannels = new LinkedList<>();
         this.isStoped = false;
     }

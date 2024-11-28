@@ -12,23 +12,26 @@ public class IFSubNode extends Node {
 
     @Override
     public void takeSubresult(ExecutorService executor, Boolean subResult) {
-        switch (this.type) {
-            case A:
-                ((IFNode) parentNode).takeA(subResult);
-                break;
-            case B:
-                ((IFNode) parentNode).takeB(subResult);
-                break;
-            case C:
-                ((IFNode) parentNode).takeC(subResult);
-                break;
-        }
+        synchronized (parentNode) {
+            if (parentNode.isCanceled == false) {
+                switch (this.type) {
+                    case A:
+                        ((IFNode) parentNode).takeA(subResult);
+                        break;
+                    case B:
+                        ((IFNode) parentNode).takeB(subResult);
+                        break;
+                    case C:
+                        ((IFNode) parentNode).takeC(subResult);
+                        break;
+                }
 
-        parentNode.check(executor);
+                parentNode.check(executor);
+            }
+        }
     }
 
     @Override
     public void check(ExecutorService executor) {
-        this.parentNode.check(executor);
     }
 }
