@@ -16,11 +16,11 @@ public class PushToParent extends PrioritezedTask {
 
     @Override
     public void run() {
-        this.parentNode.lock.lock();
-        if (this.parentNode.isCanceled() == false) {
-            this.parentNode.takeSubresult(executor, valueToPush);
-            this.parentNode.check(executor);
+        synchronized (this.parentNode) {
+            if (this.parentNode.isCanceled() == false) {
+                this.parentNode.takeSubresult(executor, valueToPush);
+                this.parentNode.check(executor);
+            }
         }
-        this.parentNode.lock.unlock();
     }
 }

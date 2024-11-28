@@ -14,10 +14,10 @@ public class CancelDown extends PrioritezedTask {
 
     @Override
     public void run() {
-        this.nodeToCancel.lock.lock();
-        if (this.nodeToCancel.isCanceled() == false) {
-            this.nodeToCancel.cancel(executor);
+        synchronized (nodeToCancel) {
+            if (this.nodeToCancel.isCanceled() == false) {
+                this.nodeToCancel.cancel(executor);
+            }
         }
-        this.nodeToCancel.lock.unlock();
     }
 }

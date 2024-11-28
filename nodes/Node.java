@@ -8,14 +8,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import cp2024.solution.tasks.CancelDown;
 
 public abstract class Node {
-    public ReentrantLock lock;
     protected Node parentNode;
     protected LinkedList<Node> subNodes; // do cancelowania zlecen na liczenie dzieci
     protected LinkedList<Future<?>> assignedTasks;
     protected Boolean isCanceled;
 
     public Node(Node parentNode) {
-        this.lock = new ReentrantLock(true);
         this.isCanceled = false;
         this.parentNode = parentNode;
         this.subNodes = new LinkedList<>();
