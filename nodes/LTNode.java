@@ -15,6 +15,9 @@ public class LTNode extends ThresholdNode {
         if (this.trues >= this.threshold) {
             executor.submit(new PushToParent(executor, parentNode, false));
             this.cancelWithLock(executor);
+        } else if (this.nargs - this.falses <= this.threshold - 1) {
+            executor.submit(new PushToParent(executor, parentNode, true));
+            this.cancelWithLock(executor);
         } else if (this.trues + this.falses == this.nargs) {
             executor.submit(new PushToParent(executor, parentNode, this.trues < this.threshold));
         }

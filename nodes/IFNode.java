@@ -27,6 +27,11 @@ public class IFNode extends Node {
                     this.cancelWithLock(executor);
                 }
             }
+        } else {
+            if (B != null && C != null && B == C) {
+                executor.submit(new PushToParent(executor, parentNode, B));
+                this.cancelWithLock(executor);
+            }
         }
     }
 
