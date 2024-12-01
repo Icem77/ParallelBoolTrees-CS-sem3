@@ -17,9 +17,9 @@ public abstract class SimpleNode extends Node {
     @Override
     public void takeSubresult(ExecutorService executor, Boolean subResult) {
         if (subResult == true) {
-            this.trues++;
+            trues++;
         } else {
-            this.falses++;
+            falses++;
         }
     }
 }

@@ -16,11 +16,11 @@ public class ResultNode extends Node {
     @Override
     public void takeSubresult(ExecutorService executor, Boolean subResult) {
         if (subResult == null) {
-            this.channel.add(null);
+            channel.add(null);
         } else if (subResult == true) {
-            this.channel.add(ResultType.TRUE);
+            channel.add(ResultType.TRUE);
         } else {
-            this.channel.add(ResultType.FALSE);
+            channel.add(ResultType.FALSE);
         }
     }
 

@@ -24,7 +24,7 @@ public abstract class Node {
     public abstract void check(ExecutorService executor);
 
     public void cancel(ExecutorService executor) {
-        if (this.isCanceled == false) {
+        if (isCanceled == false) {
             this.markAsCanceled();
 
             for (Future<?> assignedTask : assignedTasks) {
@@ -54,22 +54,22 @@ public abstract class Node {
     }
 
     public void markAsCanceled() {
-        this.isCanceled = true;
+        isCanceled = true;
     }
 
     public void attachSubNode(Node subNode) {
-        synchronized (this.subNodes) {
-            this.subNodes.add(subNode);
+        synchronized (subNodes) {
+            subNodes.add(subNode);
         }
     }
 
     public void attachAssignedTask(Future<?> task) {
-        synchronized (this.assignedTasks) {
+        synchronized (assignedTasks) {
             assignedTasks.add(task);
         }
     }
 
     public Boolean isCanceled() {
-        return this.isCanceled;
+        return isCanceled;
     }
 }

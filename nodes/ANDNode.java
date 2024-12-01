@@ -12,11 +12,11 @@ public class ANDNode extends SimpleNode {
 
     @Override
     public void check(ExecutorService executor) {
-        if (this.trues + this.falses == this.nargs) {
-            executor.submit(new PushToParent(executor, parentNode, this.trues == this.nargs));
-        } else if (this.falses > 0) {
+        if (trues + falses == nargs) {
+            executor.submit(new PushToParent(executor, parentNode, trues == nargs));
+        } else if (falses > 0) {
             executor.submit(new PushToParent(executor, parentNode, false));
-            this.cancelWithLock(executor);
+            cancelWithLock(executor);
         }
     }
 }

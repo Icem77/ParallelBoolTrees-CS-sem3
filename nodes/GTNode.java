@@ -12,14 +12,14 @@ public class GTNode extends ThresholdNode {
 
     @Override
     public void check(ExecutorService executor) {
-        if (this.trues > this.threshold) {
+        if (trues > threshold) {
             executor.submit(new PushToParent(executor, parentNode, true));
-            this.cancelWithLock(executor);
-        } else if (this.nargs - this.falses < this.threshold + 1) {
+            cancelWithLock(executor);
+        } else if (nargs - falses < threshold + 1) {
             executor.submit(new PushToParent(executor, parentNode, false));
-            this.cancelWithLock(executor);
-        } else if (this.trues + this.falses == this.nargs) {
-            executor.submit(new PushToParent(executor, parentNode, this.trues > this.threshold));
+            cancelWithLock(executor);
+        } else if (trues + falses == nargs) {
+            executor.submit(new PushToParent(executor, parentNode, trues > threshold));
         }
     }
 }

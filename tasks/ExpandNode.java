@@ -32,7 +32,7 @@ public class ExpandNode extends Task {
             try {
                 args = nodeToExpand.getArgs();
             } catch (InterruptedException e) {
-                // TODO
+                return;
             }
 
             if (nodeToExpand.getType() == NodeType.IF) {

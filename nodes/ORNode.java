@@ -12,11 +12,11 @@ public class ORNode extends SimpleNode {
 
     @Override
     public void check(ExecutorService executor) {
-        if (this.trues > 0) {
+        if (trues > 0) {
             executor.submit(new PushToParent(executor, parentNode, true));
             this.cancelWithLock(executor);
-        } else if (this.trues + this.falses == this.nargs) {
-            executor.submit(new PushToParent(executor, parentNode, this.trues > 0));
+        } else if (trues + falses == nargs) {
+            executor.submit(new PushToParent(executor, parentNode, trues > 0));
         }
     }
 }

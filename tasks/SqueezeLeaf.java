@@ -18,8 +18,8 @@ public class SqueezeLeaf extends Task {
     @Override
     public void run() {
         try {
-            boolean squeezedValue = this.leafToSqueeze.getValue();
-            this.executor.submit(new PushToParent(executor, parentNode, squeezedValue));
+            boolean squeezedValue = leafToSqueeze.getValue();
+            executor.submit(new PushToParent(executor, parentNode, squeezedValue));
         } catch (InterruptedException e) {
         }
     }

@@ -13,8 +13,8 @@ public class IFSubNode extends Node {
     @Override
     public void takeSubresult(ExecutorService executor, Boolean subResult) {
         synchronized (parentNode) {
-            if (parentNode.isCanceled == false) {
-                switch (this.type) {
+            if (parentNode.isCanceled() == false) {
+                switch (type) {
                     case A:
                         ((IFNode) parentNode).takeA(subResult);
                         break;

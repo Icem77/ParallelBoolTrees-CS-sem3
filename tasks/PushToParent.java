@@ -16,10 +16,10 @@ public class PushToParent extends Task {
 
     @Override
     public void run() {
-        synchronized (this.parentNode) {
-            if (this.parentNode.isCanceled() == false) {
-                this.parentNode.takeSubresult(executor, valueToPush);
-                this.parentNode.check(executor);
+        synchronized (parentNode) {
+            if (parentNode.isCanceled() == false) {
+                parentNode.takeSubresult(executor, valueToPush);
+                parentNode.check(executor);
             }
         }
     }

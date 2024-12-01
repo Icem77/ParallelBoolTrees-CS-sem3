@@ -15,8 +15,8 @@ public class CancelDown extends Task {
     @Override
     public void run() {
         synchronized (nodeToCancel) {
-            if (this.nodeToCancel.isCanceled() == false) {
-                this.nodeToCancel.cancel(executor);
+            if (nodeToCancel.isCanceled() == false) {
+                nodeToCancel.cancel(executor);
             }
         }
     }
