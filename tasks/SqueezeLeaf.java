@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutorService;
 import cp2024.circuit.LeafNode;
 import cp2024.solution.nodes.Node;
 
-public class SqueezeLeaf extends PrioritezedTask {
+public class SqueezeLeaf extends Task {
     private Node parentNode;
     private LeafNode leafToSqueeze;
 

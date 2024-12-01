@@ -8,7 +8,7 @@ import cp2024.circuit.NodeType;
 import cp2024.solution.nodes.*;
 import cp2024.circuit.ThresholdNode;
 
-public class ExpandNode extends PrioritezedTask {
+public class ExpandNode extends Task {
     private Node parentNode;
     private CircuitNode nodeToExpand;
 
@@ -27,26 +27,6 @@ public class ExpandNode extends PrioritezedTask {
             } catch (Exception e) {
                 // TODO
             }
-        } else if (nodeToExpand.getType() == NodeType.IF) {
-            CircuitNode[] args = {};
-            try {
-                args = nodeToExpand.getArgs();
-            } catch (InterruptedException e) {
-                // TODO
-            }
-
-            IFNode BigIf = new IFNode(this.parentNode);
-            IFSubNode A = new IFSubNode(BigIf, IFSubNodeType.A);
-            IFSubNode B = new IFSubNode(BigIf, IFSubNodeType.B);
-            IFSubNode C = new IFSubNode(BigIf, IFSubNodeType.C);
-            BigIf.attachSubNode(A);
-            BigIf.attachSubNode(B);
-            BigIf.attachSubNode(C);
-            parentNode.attachSubNode(BigIf);
-            executor.submit(new ExpandNode(executor, args[0], A));
-            executor.submit(new ExpandNode(executor, args[1], B));
-            executor.submit(new ExpandNode(executor, args[2], C));
-
         } else {
             CircuitNode[] args = {};
             try {
@@ -54,32 +34,80 @@ public class ExpandNode extends PrioritezedTask {
             } catch (InterruptedException e) {
                 // TODO
             }
-            Node newNode;
-            switch (nodeToExpand.getType()) {
-                case AND:
-                    newNode = new ANDNode(parentNode, args.length);
-                    break;
-                case OR:
-                    newNode = new ORNode(parentNode, args.length);
-                    break;
-                case LT:
-                    newNode = new LTNode(parentNode, args.length, ((ThresholdNode) nodeToExpand).getThreshold());
-                    break;
-                case GT:
-                    newNode = new GTNode(parentNode, args.length, ((ThresholdNode) nodeToExpand).getThreshold());
-                    break;
-                case NOT:
-                    newNode = new NOTNode(parentNode);
-                    break;
-                default:
-                    newNode = null;
-                    break;
-            }
 
-            parentNode.attachSubNode(newNode);
+            if (nodeToExpand.getType() == NodeType.IF) {
+                IFNode BigIf = new IFNode(this.parentNode);
+                IFSubNode A = new IFSubNode(BigIf, IFSubNodeType.A);
+                IFSubNode B = new IFSubNode(BigIf, IFSubNodeType.B);
+                IFSubNode C = new IFSubNode(BigIf, IFSubNodeType.C);
+                BigIf.attachSubNode(A);
+                BigIf.attachSubNode(B);
+                BigIf.attachSubNode(C);
+                parentNode.attachSubNode(BigIf);
 
-            for (CircuitNode arg : args) {
-                newNode.attachAssignedTask(executor.submit(new ExpandNode(executor, arg, newNode)));
+                synchronized (BigIf) {
+                    executor.submit(new ExpandNode(executor, args[0], A));
+                    executor.submit(new ExpandNode(executor, args[1], B));
+                    executor.submit(new ExpandNode(executor, args[2], C));
+                }
+            } else {
+                Node newNode;
+                switch (nodeToExpand.getType()) {
+                    case AND:
+                        newNode = new ANDNode(parentNode, args.length);
+                        break;
+                    case OR:
+                        newNode = new ORNode(parentNode, args.length);
+                        break;
+                    case LT:
+                        Integer thresholdLT = ((ThresholdNode) nodeToExpand).getThreshold();
+                        if (thresholdLT <= 0) {
+                            executor.submit(new PushToParent(executor, parentNode, false));
+                            return;
+                        } else if (thresholdLT > args.length) {
+                            executor.submit(new PushToParent(executor, parentNode, true));
+                            return;
+                        } else {
+                            newNode = new LTNode(parentNode, args.length, thresholdLT);
+                            break;
+                        }
+                    case GT:
+                        Integer thresholdGT = ((ThresholdNode) nodeToExpand).getThreshold();
+                        if (thresholdGT >= args.length) {
+                            executor.submit(new PushToParent(executor, parentNode, false));
+                            return;
+                        } else if (thresholdGT < 0) {
+                            executor.submit(new PushToParent(executor, parentNode, true));
+                            return;
+                        } else {
+                            newNode = new GTNode(parentNode, args.length, thresholdGT);
+                            break;
+                        }
+                    case NOT:
+                        newNode = new NOTNode(parentNode);
+                        break;
+                    default:
+                        newNode = null;
+                        break;
+                }
+
+                synchronized (parentNode) {
+                    if (parentNode.isCanceled() == false && !Thread.interrupted()) {
+                        parentNode.attachSubNode(newNode);
+                    } else {
+                        return;
+                    }
+                }
+
+                synchronized (newNode) {
+                    for (CircuitNode arg : args) {
+                        if (!Thread.interrupted()) {
+                            newNode.attachAssignedTask(executor.submit(new ExpandNode(executor, arg, newNode)));
+                        } else {
+                            return;
+                        }
+                    }
+                }
             }
         }
     }

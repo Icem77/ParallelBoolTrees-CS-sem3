@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 
 import cp2024.solution.nodes.Node;
 
-public class PushToParent extends PrioritezedTask {
+public class PushToParent extends Task {
     private Node parentNode;
     private Boolean valueToPush;
 

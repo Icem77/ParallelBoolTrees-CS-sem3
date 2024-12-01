@@ -30,10 +30,12 @@ public abstract class Node {
             for (Future<?> assignedTask : assignedTasks) {
                 assignedTask.cancel(true);
             }
+            assignedTasks.clear();
 
             for (Node subNode : subNodes) {
                 executor.submit(new CancelDown(executor, subNode));
             }
+            subNodes.clear();
         }
     }
 
@@ -43,10 +45,12 @@ public abstract class Node {
         for (Future<?> assignedTask : assignedTasks) {
             assignedTask.cancel(true);
         }
+        assignedTasks.clear();
 
         for (Node subNode : subNodes) {
             executor.submit(new CancelDown(executor, subNode));
         }
+        subNodes.clear();
     }
 
     public void markAsCanceled() {
