@@ -15,17 +15,19 @@ public class ParallelCircuitValue implements CircuitValue {
 
     @Override
     public boolean getValue() throws InterruptedException {
-        if (result == null) {
-            this.result = channel.take();
-        }
+        synchronized (this) {
+            if (result == null) {
+                this.result = channel.take();
+            }
 
-        switch (this.result) {
-            case TRUE:
-                return true;
-            case FALSE:
-                return false;
-            default:
-                throw new InterruptedException();
+            switch (this.result) {
+                case TRUE:
+                    return true;
+                case FALSE:
+                    return false;
+                default:
+                    throw new InterruptedException();
+            }
         }
     }
 }

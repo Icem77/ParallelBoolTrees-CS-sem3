@@ -8,7 +8,7 @@ import cp2024.circuit.NodeType;
 import cp2024.solution.nodes.*;
 import cp2024.circuit.ThresholdNode;
 
-public class ExpandNode extends Task {
+public class ExpandNode extends TaskWExecutor {
     private Node parentNode;
     private CircuitNode nodeToExpand;
 
@@ -21,12 +21,8 @@ public class ExpandNode extends Task {
     @Override
     public void run() {
         if (nodeToExpand.getType() == NodeType.LEAF) {
-            try {
-                SqueezeLeaf squeezeLeafTask = new SqueezeLeaf(executor, (LeafNode) nodeToExpand, parentNode);
-                squeezeLeafTask.run();
-            } catch (Exception e) {
-                // TODO
-            }
+            SqueezeLeaf squeezeLeafTask = new SqueezeLeaf(executor, (LeafNode) nodeToExpand, parentNode);
+            squeezeLeafTask.run();
         } else {
             CircuitNode[] args = {};
             try {
@@ -46,9 +42,9 @@ public class ExpandNode extends Task {
                 parentNode.attachSubNode(BigIf);
 
                 synchronized (BigIf) {
-                    executor.submit(new ExpandNode(executor, args[0], A));
-                    executor.submit(new ExpandNode(executor, args[1], B));
-                    executor.submit(new ExpandNode(executor, args[2], C));
+                    A.attachAssignedTask(executor.submit(new ExpandNode(executor, args[0], A)));
+                    B.attachAssignedTask(executor.submit(new ExpandNode(executor, args[1], B)));
+                    C.attachAssignedTask(executor.submit(new ExpandNode(executor, args[2], C)));
                 }
             } else {
                 Node newNode;

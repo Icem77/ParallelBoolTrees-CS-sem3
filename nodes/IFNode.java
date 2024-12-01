@@ -2,6 +2,7 @@ package cp2024.solution.nodes;
 
 import java.util.concurrent.ExecutorService;
 
+import cp2024.solution.tasks.CancelDown;
 import cp2024.solution.tasks.PushToParent;
 
 public class IFNode extends Node {
@@ -16,15 +17,19 @@ public class IFNode extends Node {
     @Override
     public void check(ExecutorService executor) {
         if (A != null) {
-            if (A == true && B != null) {
-                executor.submit(new PushToParent(executor, parentNode, B));
-                if (C == null) {
+            if (A == true) {
+                if (B != null) {
+                    executor.submit(new PushToParent(executor, parentNode, B));
                     this.cancelWithLock(executor);
+                } else if (C == null) {
+                    executor.submit(new CancelDown(executor, subNodes.get(2)));
                 }
-            } else if (A == false && C != null) {
-                executor.submit(new PushToParent(executor, parentNode, C));
-                if (B == null) {
+            } else {
+                if (C != null) {
+                    executor.submit(new PushToParent(executor, parentNode, C));
                     this.cancelWithLock(executor);
+                } else if (B == null) {
+                    executor.submit(new CancelDown(executor, subNodes.get(1)));
                 }
             }
         } else {

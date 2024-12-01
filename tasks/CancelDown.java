@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 
 import cp2024.solution.nodes.Node;
 
-public class CancelDown extends Task {
+public class CancelDown extends TaskWExecutor {
     private Node nodeToCancel;
 
     public CancelDown(ExecutorService executor, Node nodeToCancel) {

@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 
 import cp2024.solution.nodes.Node;
 
-public class PushToParent extends Task {
+public class PushToParent extends TaskWExecutor {
     private Node parentNode;
     private Boolean valueToPush;
 
