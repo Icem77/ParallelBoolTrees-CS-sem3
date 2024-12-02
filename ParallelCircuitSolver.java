@@ -2,8 +2,6 @@ package cp2024.solution;
 
 import cp2024.circuit.CircuitSolver;
 import cp2024.circuit.CircuitValue;
-import cp2024.solution.nodes.ResultNode;
-import cp2024.solution.tasks.ExpandNode;
 
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
@@ -49,6 +47,7 @@ public class ParallelCircuitSolver implements CircuitSolver {
             for (LinkedBlockingQueue<ResultType> channel : resultChannels) {
                 channel.add(ResultType.INTERRUPTED);
             }
+            resultChannels.clear();
         }
     }
 }
