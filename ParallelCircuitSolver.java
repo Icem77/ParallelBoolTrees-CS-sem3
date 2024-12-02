@@ -30,8 +30,10 @@ public class ParallelCircuitSolver implements CircuitSolver {
             newChannel.add(ResultType.INTERRUPTED);
             return val;
         } else {
-            ResultNode resultNode = new ResultNode(null, newChannel);
             this.resultChannels.add(newChannel);
+
+            ResultNode resultNode = new ResultNode(null, newChannel);
+
             workers.submit(new ExpandNode(workers, c.getRoot(), resultNode));
             return val;
         }
