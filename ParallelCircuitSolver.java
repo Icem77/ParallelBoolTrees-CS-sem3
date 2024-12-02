@@ -26,17 +26,14 @@ public class ParallelCircuitSolver implements CircuitSolver {
     public CircuitValue solve(Circuit c) {
         LinkedBlockingQueue<ResultType> newChannel = new LinkedBlockingQueue<>();
         ParallelCircuitValue val = new ParallelCircuitValue(newChannel);
+
         if (this.isStoped == true) {
             newChannel.add(ResultType.INTERRUPTED);
-            return val;
         } else {
-            this.resultChannels.add(newChannel);
-
-            ResultNode resultNode = new ResultNode(null, newChannel);
-
-            workers.submit(new ExpandNode(workers, c.getRoot(), resultNode));
-            return val;
+            workers.submit(new StartCircuitCalculaion(workers, newChannel, resultChannels, c.getRoot()));
         }
+
+        return val;
     }
 
     @Override
