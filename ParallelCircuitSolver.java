@@ -2,6 +2,8 @@ package cp2024.solution;
 
 import cp2024.circuit.CircuitSolver;
 import cp2024.circuit.CircuitValue;
+import cp2024.solution.nodes.ResultType;
+import cp2024.solution.tasks.StartCircuitCalculaion;
 
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;

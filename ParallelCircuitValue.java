@@ -3,6 +3,7 @@ package cp2024.solution;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import cp2024.circuit.CircuitValue;
+import cp2024.solution.nodes.ResultType;
 
 public class ParallelCircuitValue implements CircuitValue {
     private LinkedBlockingQueue<ResultType> channel;
